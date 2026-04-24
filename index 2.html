@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>STETAFIA CAR - Location de Voitures</title>
+
+<style>
+/* ألوان مستوحاة من لوجو STETAFIA الجديد */
+:root{
+    --bg:#080808; 
+    --card:#151515; 
+    --gold:#d4af37; 
+    --purple:#8e44ad; /* لون الموف اللي فاللوجو */
+    --gradient: linear-gradient(45deg, #d4af37, #8e44ad); /* تدرج لوني */
+    --text:#ffffff;
+    --gray:#aaaaaa;
+}
+
+body{
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+header{
+    text-align:center;
+    padding:40px 20px;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%);
+    border-bottom: 2px solid #222;
+}
+
+/* --- تعديل اللوجو هنا --- */
+header .logo-box {
+    width: 320px; /* كبرت الحجم ديال الـ container */
+    height: auto;
+    margin: 0 auto;
+    max-width: 95%; /* باش ميفوتش الشاشة فالتليفون */
+    filter: drop-shadow(0 0 15px rgba(142, 68, 173, 0.4)); /* شعاع خفيف للموف */
+}
+
+/* حذف الإطارات القديمة من الـ CSS إيلا كانت */
+header img {
+    max-width: 100%;
+    height: auto;
+    filter: none; /* حيدت الظل القديم من هنا باش ما يتخربقش */
+}
+
+.header-title {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 25px 0 5px 0; /* كبرت الـ margin العلوي شوية حيت اللوجو كبر */
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+/* GRID */
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:30px 20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:var(--card);
+    border-radius:20px;
+    overflow:hidden;
+    border: 1px solid #252525;
+    transition: 0.4s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    border-color: var(--purple);
+    box-shadow: 0 10px 30px rgba(142, 68, 173, 0.2);
+}
+
+.card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+
+.info{
+    padding:20px;
+    text-align:right;
+}
+
+.name{
+    font-weight:bold;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.price{
+    color:var(--gold);
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background: var(--gradient);
+    color:#fff;
+    font-weight:bold;
+    font-size: 16px;
+    cursor:pointer;
+    transition: 0.3s;
+}
+
+button:hover{
+    opacity: 0.9;
+    transform: scale(0.98);
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    justify-content:center;
+    align-items:center;
+    z-index: 1000;
+}
+
+.box{
+    background:#1a1a1a;
+    padding:30px;
+    border-radius:20px;
+    width:340px;
+    border: 1px solid #333;
+    position: relative;
+}
+
+.box h3 {
+    margin-top: 0;
+    color: var(--gold);
+    text-align: center;
+    font-size: 22px;
+}
+
+label {
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 15px;
+    display: block;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:10px;
+    border:1px solid #333;
+    box-sizing: border-box;
+    background: #252525;
+    color: #fff;
+    font-size: 16px;
+}
+
+input:focus {
+    border-color: var(--purple);
+    outline: none;
+}
+
+#total{
+    text-align:center;
+    margin:20px 0;
+    padding:10px;
+    border-radius:8px;
+    background: rgba(212, 175, 55, 0.1);
+    color:var(--gold);
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo-box">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" fill="none">
+        <defs>
+            <linearGradient id="gradLogo" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#8e44ad;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="gradText" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#d4af37;stop-opacity:1" />
+            </linearGradient>
+            <filter id="glowLogo">
+                <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+        
+        <path d="M50 80C50 68.9543 58.9543 60 70 60H330C341.046 60 350 68.9543 350 80V200C350 211.046 341.046 220 330 220H70C58.9543 220 50 211.046 50 200V80Z" fill="#151515" stroke="url(#gradLogo)" stroke-width="2"/>
+        
+        <path d="M120 110C120 100 130 90 145 90H255C270 90 280 100 280 110L275 140H125L120 110Z" fill="url(#gradLogo)"/>
+        <path d="M140 95H260L265 130H135L140 95Z" fill="#151515"/>
+        
+        <circle cx="160" cy="140" r="15" fill="url(#gradLogo)"/>
+        <circle cx="160" cy="140" r="10" fill="#151515"/>
+        <circle cx="240" cy="140" r="15" fill="url(#gradLogo)"/>
+        <circle cx="240" cy="140" r="10" fill="#151515"/>
+        
+        <text x="200" y="185" font-family="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" font-size="34" font-weight="900" fill="url(#gradText)" text-anchor="middle">STETAFIA</text>
+        <text x="200" y="210" font-family="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" font-size="18" font-weight="bold" fill="url(#gradText)" text-anchor="middle">CAR</text>
+        
+        <path d="M100 120L103 125L108 125L104 129L106 134L100 131L94 134L96 129L92 125L97 125L100 120Z" fill="url(#gradLogo)"/>
+        <path d="M300 100L303 105L308 105L304 109L306 114L300 111L294 114L296 109L292 105L297 105L300 100Z" fill="url(#gradLogo)"/>
+    </svg>
+</div>
+<div class="header-title">STETAFIA CAR</div>
+<p style="color:var(--gray)">كراء أحدث السيارات بأفضل الأسعار</p>
+</header>
+
+<div class="container">
+<div class="grid">
+
+<div class="card">
+<img src="https://i.ibb.co/5Xm0mzy6/IMG-9473.webp" alt="Dacia Logan">
+<div class="info">
+<div class="name">Dacia Logan</div>
+<div class="price">250 DH / يوم</div>
+<button onclick="openModal('Dacia Logan',250)">حجز الآن</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://i.ibb.co/LzjqrWXW/IMG-9474.webp" alt="Mercedes">
+<div class="info">
+<div class="name">Mercedes Classe A</div>
+<div class="price">450 DH / يوم</div>
+<button onclick="openModal('Mercedes Classe A',450)">حجز الآن</button>
+</div>
+</div>
+
+<div class="card">
+<img src="https://i.postimg.cc/TPTG7mbd/IMG-9475.jpg" alt="Range Rover">
+<div class="info">
+<div class="name">Range Rover Evoque</div>
+<div class="price">1100 DH / يوم</div>
+<button onclick="openModal('Range Rover Evoque',1100)">حجز الآن</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="modal" id="modal">
+<div class="box">
+<h3 id="title"></h3>
+
+<label>تاريخ الحجز (من):</label>
+<input type="date" id="start">
+
+<label>إلى تاريخ:</label>
+<input type="date" id="end">
+
+<label>رقم الهاتف:</label>
+<input type="tel" id="phone" placeholder="06XXXXXXXX" style="text-align:left; direction:ltr">
+
+<div id="total"></div>
+
+<button onclick="send()">تأكيد الحجز عبر واتساب</button>
+<button onclick="closeModal()" style="background:transparent; color:#666; margin-top:10px; font-size:14px">إغلاق</button>
+</div>
+</div>
+
+<script>
+let car="",price=0;
+
+function openModal(n,p){
+    car=n; price=p;
+    document.getElementById("modal").style.display="flex";
+    document.getElementById("title").innerText=n;
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+document.getElementById("start").onchange = calc;
+document.getElementById("end").onchange = calc;
+
+function calc(){
+    let sVal=document.getElementById("start").value;
+    let eVal=document.getElementById("end").value;
+    if(sVal && eVal){
+        let s=new Date(sVal), e=new Date(eVal);
+        if(e > s){
+            let days=Math.ceil((e-s)/(1000*60*60*24));
+            document.getElementById("total").innerText="الأيام: "+days+" | المجموع: "+(days*price)+" DH";
+        }
+    }
+}
+
+function send(){
+    let ph=document.getElementById("phone").value, s=document.getElementById("start").value, e=document.getElementById("end").value;
+    if(!ph || !s || !e){ alert("عمر الخانات كاملة!"); return; }
+
+    let msg=`السلام عليكم وكالة STETAFIA CAR 🚗\nبغيت نحجز: ${car}\n📅 من: ${s}\n📆 إلى: ${e}\n📱 الهاتف: ${ph}`;
+    window.location.href = "https://wa.me/212689971287?text="+encodeURIComponent(msg);
+}
+</script>
+
+</body>
+</html>
